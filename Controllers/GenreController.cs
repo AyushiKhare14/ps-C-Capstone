@@ -27,7 +27,7 @@ namespace C_BookStoreBackEndAPI.Controllers
            return Ok(_mapper.Map<IEnumerable<GenreDto>>(genres));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult GetById([FromRoute] int id) 
         {
             var genre = _context.Genres.Find(id);
@@ -36,7 +36,8 @@ namespace C_BookStoreBackEndAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(genre);
+            // return Ok(genre);
+            return Ok(_mapper.Map<GenreDto>(genre));
         }
 
         [HttpPost]
@@ -51,5 +52,41 @@ namespace C_BookStoreBackEndAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = genre.Id }, genreDto);
 
         }
+
+
+        [HttpPut("{id:int}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateGenreDto updateGenreDto)
+        {
+            var genre = _context.Genres.Find(id);
+
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(updateGenreDto, genre);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+
+        public IActionResult Delete([FromRoute] int id) 
+        {
+            var genre = _context.Genres.Find(id);
+
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            _context.Genres.Remove(genre);
+            _context.SaveChanges();
+
+            return NoContent();
+
+        }
     }
+
 }

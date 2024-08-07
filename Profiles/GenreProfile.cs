@@ -9,6 +9,7 @@ namespace C_BookStoreBackEndAPI.Profiles
         {
             CreateMap<Models.Genre, Dtos.Genre.GenreDto>();
             CreateMap<Dtos.Genre.CreateGenreDto, Models.Genre>();
+            CreateMap<Dtos.Genre.UpdateGenreDto, Models.Genre>();
         }
     }
 }

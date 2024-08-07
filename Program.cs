@@ -1,6 +1,7 @@
 
 using C_BookStoreBackEndAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace C_BookStoreBackEndAPI
 {
@@ -8,11 +9,25 @@ namespace C_BookStoreBackEndAPI
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs/BookStoreBackEndApiLog.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog();
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.ReturnHttpNotAcceptable = true;
+
+            }).AddNewtonsoftJson()
+                .AddXmlDataContractSerializerFormatters(); // Serialize the output in XML format
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
